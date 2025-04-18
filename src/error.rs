@@ -2,8 +2,6 @@
 pub enum ErrorKind {
     #[error("resource not found")]
     ResourceNotFound,
-    #[error("command buffer not found")]
-    CommandBufferNotFound,
 }
 
 #[derive(Debug, thiserror::Error)]

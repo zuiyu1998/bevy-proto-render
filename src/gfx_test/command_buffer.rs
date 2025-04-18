@@ -1,6 +1,6 @@
 use std::ops::Range;
 
-use crate::{CommandBufferTrait, RenderPassInfo, ResourceTable};
+use crate::{CommandBufferTrait, RenderPassInfo, RenderPipeline, ResourceTable};
 
 #[derive(Default)]
 pub struct TestCommandBuffer {
@@ -23,4 +23,6 @@ impl CommandBufferTrait for TestCommandBuffer {
     fn draw(&mut self, _vertices: Range<u32>, _instances: Range<u32>) {}
 
     fn draw_indexed(&mut self, _indices: Range<u32>, _base_vertex: i32, _instances: Range<u32>) {}
+
+    fn set_pipeline(&mut self, _pipeline: &RenderPipeline) {}
 }

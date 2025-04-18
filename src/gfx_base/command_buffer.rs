@@ -4,6 +4,8 @@ use downcast_rs::Downcast;
 
 use crate::{ResourceTable, Result, define_gfx_type};
 
+use super::RenderPipeline;
+
 pub trait CommandBufferTrait: 'static + Sync + Send {
     fn begin_render_pass(
         &mut self,
@@ -16,6 +18,8 @@ pub trait CommandBufferTrait: 'static + Sync + Send {
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>);
 
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
+
+    fn set_pipeline(&mut self, pipeline: &RenderPipeline);
 }
 
 pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
@@ -30,6 +34,8 @@ pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>);
 
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
+
+    fn set_pipeline(&mut self, pipeline: &RenderPipeline);
 }
 
 impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
@@ -51,6 +57,10 @@ impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
 
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
         <T as CommandBufferTrait>::draw_indexed(self, indices, base_vertex, instances);
+    }
+
+    fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
+        <T as CommandBufferTrait>::set_pipeline(self, pipeline);
     }
 }
 
@@ -79,5 +89,9 @@ impl CommandBuffer {
 
     pub fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
         self.value.draw_indexed(indices, base_vertex, instances);
+    }
+
+    pub fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
+        self.value.set_pipeline(pipeline);
     }
 }

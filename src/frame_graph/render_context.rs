@@ -1,6 +1,6 @@
 use std::{ops::Range, sync::Arc};
 
-use crate::{CommandBuffer, ErrorKind, RenderDevice, RenderPassInfo, Result};
+use crate::{CommandBuffer, RenderDevice, RenderPassInfo, RenderPipeline, Result};
 
 use super::ResourceTable;
 
@@ -21,35 +21,22 @@ impl<'a> RenderContext<'a> {
         }
     }
 
-    pub fn draw_indexed(
-        &mut self,
-        indices: Range<u32>,
-        base_vertex: i32,
-        instances: Range<u32>,
-    ) -> Result<()> {
-        if self.command_buffer.is_none() {
-            return Err(ErrorKind::CommandBufferNotFound.into());
-        }
+    pub fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
+        self.command_buffer.as_mut().unwrap().set_pipeline(pipeline);
+    }
 
+    pub fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
         self.command_buffer
             .as_mut()
             .unwrap()
             .draw_indexed(indices, base_vertex, instances);
-
-        Ok(())
     }
 
-    pub fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) -> Result<()> {
-        if self.command_buffer.is_none() {
-            return Err(ErrorKind::CommandBufferNotFound.into());
-        }
-
+    pub fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) {
         self.command_buffer
             .as_mut()
             .unwrap()
             .draw(vertices, instances);
-
-        Ok(())
     }
 
     pub fn begin_render_pass(&mut self, render_pass_info: &RenderPassInfo) -> Result<()> {

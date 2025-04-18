@@ -2,6 +2,8 @@ use std::ops::Range;
 
 use crate::{Result, frame_graph::*, gfx_base::*};
 
+use super::WgpuRenderPipeline;
+
 pub struct WgpuCommandBuffer {
     device: wgpu::Device,
     command_encoder: Option<wgpu::CommandEncoder>,
@@ -56,15 +58,22 @@ impl CommandBufferTrait for WgpuCommandBuffer {
     }
 
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) {
-        assert!(self.command_encoder.is_some());
         self.render_pass.as_mut().unwrap().draw(vertices, instances);
     }
 
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
-        assert!(self.command_encoder.is_some());
         self.render_pass
             .as_mut()
             .unwrap()
             .draw_indexed(indices, base_vertex, instances);
+    }
+
+    fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
+        let pipeline = &pipeline
+            .downcast_ref::<WgpuRenderPipeline>()
+            .unwrap()
+            .render_pipeline;
+
+        self.render_pass.as_mut().unwrap().set_pipeline(pipeline);
     }
 }
