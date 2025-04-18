@@ -59,4 +59,12 @@ impl CommandBufferTrait for WgpuCommandBuffer {
         assert!(self.command_encoder.is_some());
         self.render_pass.as_mut().unwrap().draw(vertices, instances);
     }
+
+    fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
+        assert!(self.command_encoder.is_some());
+        self.render_pass
+            .as_mut()
+            .unwrap()
+            .draw_indexed(indices, base_vertex, instances);
+    }
 }

@@ -21,6 +21,24 @@ impl<'a> RenderContext<'a> {
         }
     }
 
+    pub fn draw_indexed(
+        &mut self,
+        indices: Range<u32>,
+        base_vertex: i32,
+        instances: Range<u32>,
+    ) -> Result<()> {
+        if self.command_buffer.is_none() {
+            return Err(ErrorKind::CommandBufferNotFound.into());
+        }
+
+        self.command_buffer
+            .as_mut()
+            .unwrap()
+            .draw_indexed(indices, base_vertex, instances);
+
+        Ok(())
+    }
+
     pub fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) -> Result<()> {
         if self.command_buffer.is_none() {
             return Err(ErrorKind::CommandBufferNotFound.into());

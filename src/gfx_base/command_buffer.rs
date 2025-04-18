@@ -14,6 +14,8 @@ pub trait CommandBufferTrait: 'static + Sync + Send {
     fn end_render_pass(&mut self);
 
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>);
+
+    fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
 }
 
 pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
@@ -26,6 +28,8 @@ pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
     fn end_render_pass(&mut self);
 
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>);
+
+    fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
 }
 
 impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
@@ -43,6 +47,10 @@ impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
 
     fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) {
         <T as CommandBufferTrait>::draw(self, vertices, instances);
+    }
+
+    fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
+        <T as CommandBufferTrait>::draw_indexed(self, indices, base_vertex, instances);
     }
 }
 
@@ -67,5 +75,9 @@ impl CommandBuffer {
 
     pub fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) {
         self.value.draw(vertices, instances);
+    }
+
+    pub fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>) {
+        self.value.draw_indexed(indices, base_vertex, instances);
     }
 }
