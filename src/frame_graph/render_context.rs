@@ -3,8 +3,8 @@ use std::{ops::Range, sync::Arc};
 use crate::{
     ErrorKind, Result,
     gfx_base::{
-        BindGroupRef, CachedRenderPipelineId, CommandBuffer, PipelineCache, RenderDevice,
-        RenderPassInfo, buffer::Buffer,
+        BindGroupRef, CachedRenderPipelineId, CommandBuffer, IndexFormat, PipelineCache,
+        RenderDevice, RenderPassInfo, buffer::Buffer,
     },
 };
 
@@ -27,6 +27,18 @@ impl<'a> RenderContext<'a> {
             resource_table: Default::default(),
             pipeline_cache,
         }
+    }
+
+    pub fn set_index_buffer(
+        &mut self,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
+    ) -> Result<()> {
+        self.command_buffer.as_mut().unwrap().set_index_buffer(
+            &self.resource_table,
+            buffer_ref,
+            index_format,
+        )
     }
 
     pub fn set_vertex_buffer(

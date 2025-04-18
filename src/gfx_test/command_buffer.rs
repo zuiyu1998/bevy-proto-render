@@ -44,4 +44,13 @@ impl CommandBufferTrait for TestCommandBuffer {
     ) -> Result<()> {
         Ok(())
     }
+
+    fn set_index_buffer(
+        &mut self,
+        _resource_table: &ResourceTable,
+        _buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        _index_format: IndexFormat,
+    ) -> Result<()> {
+        Ok(())
+    }
 }

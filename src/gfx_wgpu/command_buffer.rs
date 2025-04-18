@@ -130,4 +130,29 @@ impl CommandBufferTrait for WgpuCommandBuffer {
 
         Ok(())
     }
+
+    fn set_index_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
+    ) -> Result<()> {
+        let buffer = resource_table
+            .get_resource(buffer_ref)
+            .ok_or(ErrorKind::ResourceNotFound)?;
+
+        let index_format = match index_format {
+            IndexFormat::Uint16 => wgpu::IndexFormat::Uint16,
+            IndexFormat::Uint32 => wgpu::IndexFormat::Uint32,
+        };
+
+        let wgpu_buffer = buffer.downcast_ref::<WgpuBuffer>().unwrap();
+
+        self.render_pass
+            .as_mut()
+            .unwrap()
+            .set_index_buffer(wgpu_buffer.buffer.slice(0..), index_format);
+
+        Ok(())
+    }
 }

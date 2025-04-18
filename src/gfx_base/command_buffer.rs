@@ -7,7 +7,7 @@ use crate::{
     frame_graph::{GpuRead, ResourceRef, ResourceTable},
 };
 
-use super::{BindGroupRef, Buffer, RenderPipeline};
+use super::{BindGroupRef, Buffer, IndexFormat, RenderPipeline};
 
 pub trait CommandBufferTrait: 'static + Sync + Send {
     fn begin_render_pass(
@@ -37,6 +37,13 @@ pub trait CommandBufferTrait: 'static + Sync + Send {
         resource_table: &ResourceTable,
         buffer_ref: &ResourceRef<Buffer, GpuRead>,
         slot: u32,
+    ) -> Result<()>;
+
+    fn set_index_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
     ) -> Result<()>;
 }
 
@@ -68,6 +75,13 @@ pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
         resource_table: &ResourceTable,
         buffer_ref: &ResourceRef<Buffer, GpuRead>,
         slot: u32,
+    ) -> Result<()>;
+
+    fn set_index_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
     ) -> Result<()>;
 }
 
@@ -119,6 +133,15 @@ impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
         slot: u32,
     ) -> Result<()> {
         <T as CommandBufferTrait>::set_vertex_buffer(self, resource_table, buffer_ref, slot)
+    }
+
+    fn set_index_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
+    ) -> Result<()> {
+        <T as CommandBufferTrait>::set_index_buffer(self, resource_table, buffer_ref, index_format)
     }
 }
 
@@ -172,5 +195,15 @@ impl CommandBuffer {
     ) -> Result<()> {
         self.value
             .set_vertex_buffer(resource_table, buffer_ref, slot)
+    }
+
+    pub fn set_index_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        index_format: IndexFormat,
+    ) -> Result<()> {
+        self.value
+            .set_index_buffer(resource_table, buffer_ref, index_format)
     }
 }
