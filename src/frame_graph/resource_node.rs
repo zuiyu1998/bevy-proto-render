@@ -10,6 +10,12 @@ pub struct ResourceNodeHandle<ResourceType> {
     _marker: PhantomData<ResourceType>,
 }
 
+#[derive(Clone)]
+pub struct RawResourceNodeHandle {
+    pub resource_node_handle: TypeHandle<ResourceNode>,
+    pub resource_handle: TypeHandle<VirtualResource>,
+}
+
 pub struct ResourceNode {
     ///资源索引
     pub resource_handle: TypeHandle<VirtualResource>,
