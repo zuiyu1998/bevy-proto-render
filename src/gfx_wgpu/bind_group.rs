@@ -1,4 +1,8 @@
-use crate::{BindGroupRef, BindGroupTrait, ExtractResourceTable, ResourceTable, Result};
+use crate::{
+    Result,
+    frame_graph::{ExtractResourceTable, ResourceTable},
+    gfx_base::{BindGroupRef, BindGroupTrait},
+};
 
 pub struct WgpuBindGroup {
     pub bind_group: wgpu::BindGroup,

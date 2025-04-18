@@ -7,5 +7,3 @@ pub mod gfx_wgpu;
 pub mod gfx_test;
 
 pub use error::*;
-pub use frame_graph::*;
-pub use gfx_base::*;

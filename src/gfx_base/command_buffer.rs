@@ -2,7 +2,7 @@ use std::ops::Range;
 
 use downcast_rs::Downcast;
 
-use crate::{ResourceTable, Result, define_gfx_type};
+use crate::{Result, define_gfx_type, frame_graph::ResourceTable};
 
 use super::{BindGroupRef, RenderPipeline};
 

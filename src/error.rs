@@ -2,6 +2,10 @@
 pub enum ErrorKind {
     #[error("resource not found")]
     ResourceNotFound,
+    #[error("render pipieline not found")]
+    RenderPipelineNotFound,
+    #[error("pipieline not match")]
+    PipelineNotMatch,
 }
 
 #[derive(Debug, thiserror::Error)]

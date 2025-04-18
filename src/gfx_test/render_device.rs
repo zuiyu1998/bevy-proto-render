@@ -1,4 +1,4 @@
-use crate::{CommandBuffer, RenderDeviceTrait};
+use crate::gfx_base::{CommandBuffer, RenderDeviceTrait};
 
 use super::TestCommandBuffer;
 
