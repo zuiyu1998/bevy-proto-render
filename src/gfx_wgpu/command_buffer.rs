@@ -1,8 +1,8 @@
 use std::ops::Range;
 
-use crate::{Result, frame_graph::*, gfx_base::*};
+use crate::{ErrorKind, Result, frame_graph::*, gfx_base::*};
 
-use super::{WgpuBindGroupInfo, WgpuRenderPipeline};
+use super::{WgpuBindGroupInfo, WgpuBuffer, WgpuRenderPipeline};
 
 pub struct WgpuCommandBuffer {
     device: wgpu::Device,
@@ -107,6 +107,26 @@ impl CommandBufferTrait for WgpuCommandBuffer {
             .as_mut()
             .unwrap()
             .set_bind_group(index, Some(&bind_group), offsets);
+
+        Ok(())
+    }
+
+    fn set_vertex_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        slot: u32,
+    ) -> Result<()> {
+        let buffer = resource_table
+            .get_resource(buffer_ref)
+            .ok_or(ErrorKind::ResourceNotFound)?;
+
+        let wgpu_buffer = buffer.downcast_ref::<WgpuBuffer>().unwrap();
+
+        self.render_pass
+            .as_mut()
+            .unwrap()
+            .set_vertex_buffer(slot, wgpu_buffer.buffer.slice(0..));
 
         Ok(())
     }

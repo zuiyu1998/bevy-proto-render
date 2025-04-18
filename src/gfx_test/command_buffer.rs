@@ -35,4 +35,13 @@ impl CommandBufferTrait for TestCommandBuffer {
     ) -> Result<()> {
         Ok(())
     }
+
+    fn set_vertex_buffer(
+        &mut self,
+        _resource_table: &ResourceTable,
+        _buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        _slot: u32,
+    ) -> Result<()> {
+        Ok(())
+    }
 }

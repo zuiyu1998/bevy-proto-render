@@ -2,9 +2,12 @@ use std::ops::Range;
 
 use downcast_rs::Downcast;
 
-use crate::{Result, define_gfx_type, frame_graph::ResourceTable};
+use crate::{
+    Result, define_gfx_type,
+    frame_graph::{GpuRead, ResourceRef, ResourceTable},
+};
 
-use super::{BindGroupRef, RenderPipeline};
+use super::{BindGroupRef, Buffer, RenderPipeline};
 
 pub trait CommandBufferTrait: 'static + Sync + Send {
     fn begin_render_pass(
@@ -27,6 +30,13 @@ pub trait CommandBufferTrait: 'static + Sync + Send {
         bind_group_ref: Option<&BindGroupRef>,
         index: u32,
         offsets: &[u32],
+    ) -> Result<()>;
+
+    fn set_vertex_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        slot: u32,
     ) -> Result<()>;
 }
 
@@ -51,6 +61,13 @@ pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
         bind_group_ref: Option<&BindGroupRef>,
         index: u32,
         offsets: &[u32],
+    ) -> Result<()>;
+
+    fn set_vertex_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        slot: u32,
     ) -> Result<()>;
 }
 
@@ -94,6 +111,15 @@ impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
             offsets,
         )
     }
+
+    fn set_vertex_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        slot: u32,
+    ) -> Result<()> {
+        <T as CommandBufferTrait>::set_vertex_buffer(self, resource_table, buffer_ref, slot)
+    }
 }
 
 define_gfx_type!(CommandBuffer, CommandBufferTrait, ErasedCommandBufferTrait);
@@ -136,5 +162,15 @@ impl CommandBuffer {
     ) -> Result<()> {
         self.value
             .set_bind_group(resource_table, bind_group_ref, index, offsets)
+    }
+
+    pub fn set_vertex_buffer(
+        &mut self,
+        resource_table: &ResourceTable,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+        slot: u32,
+    ) -> Result<()> {
+        self.value
+            .set_vertex_buffer(resource_table, buffer_ref, slot)
     }
 }

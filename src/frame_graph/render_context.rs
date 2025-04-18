@@ -4,11 +4,11 @@ use crate::{
     ErrorKind, Result,
     gfx_base::{
         BindGroupRef, CachedRenderPipelineId, CommandBuffer, PipelineCache, RenderDevice,
-        RenderPassInfo,
+        RenderPassInfo, buffer::Buffer,
     },
 };
 
-use super::ResourceTable;
+use super::{GpuRead, ResourceRef, ResourceTable};
 
 pub struct RenderContext<'a> {
     device: &'a Arc<RenderDevice>,
@@ -27,6 +27,18 @@ impl<'a> RenderContext<'a> {
             resource_table: Default::default(),
             pipeline_cache,
         }
+    }
+
+    pub fn set_vertex_buffer(
+        &mut self,
+        slot: u32,
+        buffer_ref: &ResourceRef<Buffer, GpuRead>,
+    ) -> Result<()> {
+        self.command_buffer.as_mut().unwrap().set_vertex_buffer(
+            &self.resource_table,
+            buffer_ref,
+            slot,
+        )
     }
 
     pub fn set_bind_group(
