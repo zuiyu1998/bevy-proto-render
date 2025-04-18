@@ -14,6 +14,12 @@ impl ResourceTable {
     }
 }
 
+pub trait GetResourceTable {
+    type Source;
+
+    fn get(&self, resource_table: &ResourceTable) -> Result<Self::Source>;
+}
+
 pub trait ExtractResourceTable: Sized {
     type Source: 'static;
 
