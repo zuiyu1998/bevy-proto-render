@@ -1,0 +1,37 @@
+use std::marker::PhantomData;
+
+use crate::gfx_base::TypeHandle;
+
+use super::{PassNode, VirtualResource};
+
+pub struct ResourceNodeHandle<ResourceType> {
+    pub resource_node_handle: TypeHandle<ResourceNode>,
+    pub resource_handle: TypeHandle<VirtualResource>,
+    _marker: PhantomData<ResourceType>,
+}
+
+pub struct ResourceNode {
+    ///资源索引
+    pub resource_handle: TypeHandle<VirtualResource>,
+    ///自身索引
+    pub handle: TypeHandle<ResourceNode>,
+    /// 资源版本
+    pub version: u32,
+    /// 当前写入此资源节点的渲染节点
+    pub pass_node_writer: Option<TypeHandle<PassNode>>,
+}
+
+impl ResourceNode {
+    pub fn new(
+        handle: TypeHandle<ResourceNode>,
+        resource_handle: TypeHandle<VirtualResource>,
+        version: u32,
+    ) -> Self {
+        ResourceNode {
+            handle,
+            version,
+            pass_node_writer: None,
+            resource_handle,
+        }
+    }
+}
