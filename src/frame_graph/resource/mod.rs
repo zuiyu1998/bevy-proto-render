@@ -1,8 +1,15 @@
-use std::marker::PhantomData;
+use std::{marker::PhantomData, sync::Arc};
 
 use crate::gfx_base::TypeHandle;
 
 use super::PassNode;
+
+pub trait ImportToFrameGraph
+where
+    Self: Sized + Resource,
+{
+    fn import(self: Arc<Self>) -> ImportedVirtualResource;
+}
 
 #[derive(Clone)]
 pub enum ImportedVirtualResource {}

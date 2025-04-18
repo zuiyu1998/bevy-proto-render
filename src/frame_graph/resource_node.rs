@@ -11,6 +11,13 @@ pub struct ResourceNodeHandle<ResourceType> {
 }
 
 impl<ResourceType> ResourceNodeHandle<ResourceType> {
+    pub fn raw(&self) -> RawResourceNodeHandle {
+        RawResourceNodeHandle {
+            resource_node_handle: self.resource_node_handle,
+            resource_handle: self.resource_handle,
+        }
+    }
+
     pub fn new(
         resource_node_handle: TypeHandle<ResourceNode>,
         resource_handle: TypeHandle<VirtualResource>,

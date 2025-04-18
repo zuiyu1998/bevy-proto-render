@@ -1,8 +1,11 @@
+use std::sync::Arc;
+
 use crate::gfx_base::TypeHandle;
 
 use super::{
-    DevicePass, PassNode, RenderContext, Resource, ResourceDescriptor, ResourceInfo, ResourceNode,
-    ResourceNodeHandle, ResourceTable, TypeEquals, VirtualResource,
+    DevicePass, ImportToFrameGraph, PassNode, RenderContext, Resource, ResourceBoard,
+    ResourceDescriptor, ResourceInfo, ResourceNode, ResourceNodeHandle, TypeEquals,
+    VirtualResource,
 };
 
 pub struct FrameGraph {
@@ -10,10 +13,49 @@ pub struct FrameGraph {
     resource_nodes: Vec<ResourceNode>,
     pass_nodes: Vec<PassNode>,
     device_passes: Option<Vec<DevicePass>>,
-    resource_board: ResourceTable,
+    resource_board: ResourceBoard,
 }
 
 impl FrameGraph {
+    #[allow(unreachable_code)]
+    #[allow(unused_variables)]
+    pub fn import<ResourceType>(
+        &mut self,
+        name: &str,
+        resource: Arc<ResourceType>,
+        desc: ResourceType::Descriptor,
+    ) -> ResourceNodeHandle<ResourceType>
+    where
+        ResourceType: ImportToFrameGraph,
+    {
+        if let Some(raw_handle) = self.resource_board.get(name) {
+            return ResourceNodeHandle::new(
+                raw_handle.resource_node_handle,
+                raw_handle.resource_handle,
+            );
+        }
+
+        let imported_resource = ImportToFrameGraph::import(resource);
+        let resource_handle = TypeHandle::new(self.resources.len());
+        let resource: VirtualResource = VirtualResource::new_imported::<ResourceType>(
+            name,
+            resource_handle,
+            desc,
+            imported_resource,
+        );
+
+        let resource_info = resource.info.clone();
+        self.resources.push(resource);
+
+        let handle = self.create_resource_node(resource_info);
+
+        let handle = ResourceNodeHandle::new(handle, resource_handle);
+
+        self.resource_board.put(name, handle.raw());
+
+        handle
+    }
+
     pub(crate) fn create_resource_node(
         &mut self,
         resource_info: ResourceInfo,
