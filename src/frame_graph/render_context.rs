@@ -1,6 +1,6 @@
-use std::sync::Arc;
+use std::{ops::Range, sync::Arc};
 
-use crate::{CommandBuffer, RenderDevice, RenderPassInfo, Result};
+use crate::{CommandBuffer, ErrorKind, RenderDevice, RenderPassInfo, Result};
 
 use super::ResourceTable;
 
@@ -19,6 +19,19 @@ impl<'a> RenderContext<'a> {
             command_buffer_queue: vec![],
             resource_table: Default::default(),
         }
+    }
+
+    pub fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) -> Result<()> {
+        if self.command_buffer.is_none() {
+            return Err(ErrorKind::CommandBufferNotFound.into());
+        }
+
+        self.command_buffer
+            .as_mut()
+            .unwrap()
+            .draw(vertices, instances);
+
+        Ok(())
     }
 
     pub fn begin_render_pass(&mut self, render_pass_info: &RenderPassInfo) -> Result<()> {

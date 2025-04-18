@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 use crate::{CommandBufferTrait, RenderPassInfo, ResourceTable};
 
 #[derive(Default)]
@@ -17,4 +19,6 @@ impl CommandBufferTrait for TestCommandBuffer {
     }
 
     fn end_render_pass(&mut self) {}
+
+    fn draw(&mut self, _vertices: Range<u32>, _instances: Range<u32>) {}
 }

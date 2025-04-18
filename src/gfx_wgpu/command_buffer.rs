@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 use crate::{Result, frame_graph::*, gfx_base::*};
 
 pub struct WgpuCommandBuffer {
@@ -51,5 +53,10 @@ impl CommandBufferTrait for WgpuCommandBuffer {
             let command_buffer = command_encoder.finish();
             self.command_buffer = Some(command_buffer);
         }
+    }
+
+    fn draw(&mut self, vertices: Range<u32>, instances: Range<u32>) {
+        assert!(self.command_encoder.is_some());
+        self.render_pass.as_mut().unwrap().draw(vertices, instances);
     }
 }
