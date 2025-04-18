@@ -1,6 +1,9 @@
 use crate::gfx_base::TypeHandle;
 
-use super::{DevicePass, PassNode, RenderContext, ResourceNode, ResourceTable, VirtualResource};
+use super::{
+    DevicePass, PassNode, RenderContext, Resource, ResourceDescriptor, ResourceInfo, ResourceNode,
+    ResourceNodeHandle, ResourceTable, TypeEquals, VirtualResource,
+};
 
 pub struct FrameGraph {
     resources: Vec<VirtualResource>,
@@ -8,6 +11,54 @@ pub struct FrameGraph {
     pass_nodes: Vec<PassNode>,
     device_passes: Option<Vec<DevicePass>>,
     resource_board: ResourceTable,
+}
+
+impl FrameGraph {
+    pub(crate) fn create_resource_node(
+        &mut self,
+        resource_info: ResourceInfo,
+    ) -> TypeHandle<ResourceNode> {
+        let resource_handle = resource_info.handle;
+        let version = resource_info.version();
+
+        let handle = TypeHandle::new(self.resource_nodes.len());
+
+        self.resource_nodes
+            .push(ResourceNode::new(handle, resource_handle, version));
+
+        handle
+    }
+
+    #[allow(unreachable_code)]
+    #[allow(unused_variables)]
+    pub fn create<DescriptorType>(
+        &mut self,
+        name: &str,
+        desc: DescriptorType,
+    ) -> ResourceNodeHandle<DescriptorType::Resource>
+    where
+        DescriptorType: ResourceDescriptor
+            + TypeEquals<
+                Other = <<DescriptorType as ResourceDescriptor>::Resource as Resource>::Descriptor,
+            >,
+    {
+        let resource_handle = TypeHandle::new(self.resources.len());
+
+        let virtual_resource: VirtualResource = {
+            VirtualResource::new_setuped::<DescriptorType::Resource>(
+                TypeEquals::same(desc),
+                name,
+                resource_handle,
+            )
+        };
+        let resource_info = virtual_resource.info.clone();
+
+        self.resources.push(virtual_resource);
+
+        let handle = self.create_resource_node(resource_info);
+
+        ResourceNodeHandle::new(handle, resource_handle)
+    }
 }
 
 impl FrameGraph {

@@ -9,8 +9,39 @@ pub enum ImportedVirtualResource {}
 
 #[derive(Clone)]
 pub struct VirtualResource {
-    pub state: ResourceState,
     pub info: ResourceInfo,
+    pub state: ResourceState,
+}
+
+impl VirtualResource {
+    pub fn new_setuped<ResourceType: Resource>(
+        desc: ResourceType::Descriptor,
+        name: &str,
+        handle: TypeHandle<VirtualResource>,
+    ) -> VirtualResource {
+        VirtualResource {
+            info: ResourceInfo::new(name, handle),
+            state: ResourceState::Setuped(desc.into()),
+        }
+    }
+
+    #[allow(unreachable_code)]
+    #[allow(unused_variables)]
+    pub fn new_imported<ResourceType: Resource>(
+        name: &str,
+        handle: TypeHandle<VirtualResource>,
+        desc: ResourceType::Descriptor,
+        imported_resource: ImportedVirtualResource,
+    ) -> VirtualResource {
+        let info = ResourceInfo::new(name, handle);
+
+        let state = ResourceState::imported(ImportedResourceState::new(
+            desc.into(),
+            imported_resource.clone(),
+        ));
+
+        VirtualResource { info, state }
+    }
 }
 
 #[derive(Clone)]
@@ -58,10 +89,26 @@ pub struct ImportedResourceState {
     pub resource: ImportedVirtualResource,
 }
 
+impl ImportedResourceState {
+    pub fn new(desc: AnyResourceDescriptor, resource: ImportedVirtualResource) -> Self {
+        Self { desc, resource }
+    }
+}
+
 #[derive(Clone)]
 pub enum ResourceState {
     Setuped(AnyResourceDescriptor),
     Imported(ImportedResourceState),
+}
+
+impl ResourceState {
+    pub fn imported(state: ImportedResourceState) -> Self {
+        ResourceState::Imported(state)
+    }
+
+    pub fn setuped(desc: AnyResourceDescriptor) -> Self {
+        ResourceState::Setuped(desc)
+    }
 }
 
 #[derive(Clone)]

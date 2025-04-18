@@ -10,6 +10,19 @@ pub struct ResourceNodeHandle<ResourceType> {
     _marker: PhantomData<ResourceType>,
 }
 
+impl<ResourceType> ResourceNodeHandle<ResourceType> {
+    pub fn new(
+        resource_node_handle: TypeHandle<ResourceNode>,
+        resource_handle: TypeHandle<VirtualResource>,
+    ) -> Self {
+        ResourceNodeHandle {
+            resource_node_handle,
+            resource_handle,
+            _marker: PhantomData,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct RawResourceNodeHandle {
     pub resource_node_handle: TypeHandle<ResourceNode>,
