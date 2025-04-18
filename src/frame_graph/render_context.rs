@@ -1,6 +1,6 @@
 use std::{ops::Range, sync::Arc};
 
-use crate::{CommandBuffer, RenderDevice, RenderPassInfo, RenderPipeline, Result};
+use crate::{BindGroupRef, CommandBuffer, RenderDevice, RenderPassInfo, RenderPipeline, Result};
 
 use super::ResourceTable;
 
@@ -19,6 +19,20 @@ impl<'a> RenderContext<'a> {
             command_buffer_queue: vec![],
             resource_table: Default::default(),
         }
+    }
+
+    pub fn set_bind_group(
+        &mut self,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()> {
+        self.command_buffer.as_mut().unwrap().set_bind_group(
+            &self.resource_table,
+            bind_group_ref,
+            index,
+            offsets,
+        )
     }
 
     pub fn set_pipeline(&mut self, pipeline: &RenderPipeline) {

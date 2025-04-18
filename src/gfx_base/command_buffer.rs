@@ -4,7 +4,7 @@ use downcast_rs::Downcast;
 
 use crate::{ResourceTable, Result, define_gfx_type};
 
-use super::RenderPipeline;
+use super::{BindGroupRef, RenderPipeline};
 
 pub trait CommandBufferTrait: 'static + Sync + Send {
     fn begin_render_pass(
@@ -20,6 +20,14 @@ pub trait CommandBufferTrait: 'static + Sync + Send {
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
 
     fn set_pipeline(&mut self, pipeline: &RenderPipeline);
+
+    fn set_bind_group(
+        &mut self,
+        resource_table: &ResourceTable,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()>;
 }
 
 pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
@@ -36,6 +44,14 @@ pub trait ErasedCommandBufferTrait: 'static + Sync + Send + Downcast {
     fn draw_indexed(&mut self, indices: Range<u32>, base_vertex: i32, instances: Range<u32>);
 
     fn set_pipeline(&mut self, pipeline: &RenderPipeline);
+
+    fn set_bind_group(
+        &mut self,
+        resource_table: &ResourceTable,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()>;
 }
 
 impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
@@ -61,6 +77,22 @@ impl<T: CommandBufferTrait> ErasedCommandBufferTrait for T {
 
     fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
         <T as CommandBufferTrait>::set_pipeline(self, pipeline);
+    }
+
+    fn set_bind_group(
+        &mut self,
+        resource_table: &ResourceTable,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()> {
+        <T as CommandBufferTrait>::set_bind_group(
+            self,
+            resource_table,
+            bind_group_ref,
+            index,
+            offsets,
+        )
     }
 }
 
@@ -93,5 +125,16 @@ impl CommandBuffer {
 
     pub fn set_pipeline(&mut self, pipeline: &RenderPipeline) {
         self.value.set_pipeline(pipeline);
+    }
+
+    pub fn set_bind_group(
+        &mut self,
+        resource_table: &ResourceTable,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()> {
+        self.value
+            .set_bind_group(resource_table, bind_group_ref, index, offsets)
     }
 }

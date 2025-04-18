@@ -2,7 +2,7 @@ use std::ops::Range;
 
 use crate::{Result, frame_graph::*, gfx_base::*};
 
-use super::WgpuRenderPipeline;
+use super::{WgpuBindGroupInfo, WgpuRenderPipeline};
 
 pub struct WgpuCommandBuffer {
     device: wgpu::Device,
@@ -75,5 +75,39 @@ impl CommandBufferTrait for WgpuCommandBuffer {
             .render_pipeline;
 
         self.render_pass.as_mut().unwrap().set_pipeline(pipeline);
+    }
+
+    fn set_bind_group(
+        &mut self,
+        resource_table: &ResourceTable,
+        bind_group_ref: Option<&BindGroupRef>,
+        index: u32,
+        offsets: &[u32],
+    ) -> Result<()> {
+        if bind_group_ref.is_none() {
+            self.render_pass
+                .as_mut()
+                .unwrap()
+                .set_bind_group(index, None, offsets);
+
+            return Ok(());
+        }
+
+        let bind_group_ref = bind_group_ref.unwrap();
+
+        let bind_group_info = WgpuBindGroupInfo::extract(bind_group_ref, resource_table)?;
+
+        let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: None,
+            layout: bind_group_info.layout,
+            entries: bind_group_info.entries,
+        });
+
+        self.render_pass
+            .as_mut()
+            .unwrap()
+            .set_bind_group(index, Some(&bind_group), offsets);
+
+        Ok(())
     }
 }
