@@ -9,11 +9,11 @@ use super::{
 };
 
 pub struct FrameGraph {
-    resources: Vec<VirtualResource>,
-    resource_nodes: Vec<ResourceNode>,
-    pass_nodes: Vec<PassNode>,
+    pub(crate) resources: Vec<VirtualResource>,
+    pub(crate) resource_nodes: Vec<ResourceNode>,
+    pub(crate) pass_nodes: Vec<PassNode>,
     device_passes: Option<Vec<DevicePass>>,
-    resource_board: ResourceBoard,
+    pub(crate) resource_board: ResourceBoard,
 }
 
 impl FrameGraph {

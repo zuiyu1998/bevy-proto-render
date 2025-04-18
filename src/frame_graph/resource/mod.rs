@@ -148,7 +148,17 @@ impl<T: Sized> TypeEquals for T {
 }
 
 pub struct ResourceRef<ResourceType, ViewType> {
+    pub index: TypeHandle<VirtualResource>,
     _marker: PhantomData<(ResourceType, ViewType)>,
+}
+
+impl<ResourceType, ViewType> ResourceRef<ResourceType, ViewType> {
+    pub fn new(index: TypeHandle<VirtualResource>) -> Self {
+        Self {
+            index,
+            _marker: PhantomData,
+        }
+    }
 }
 
 pub trait GpuView {}

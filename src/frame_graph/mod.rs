@@ -1,6 +1,7 @@
 pub mod device_pass;
 pub mod graph;
 pub mod pass_node;
+pub mod pass_node_builder;
 pub mod render_context;
 pub mod resource;
 pub mod resource_board;
@@ -10,6 +11,7 @@ pub mod resource_table;
 pub use device_pass::*;
 pub use graph::*;
 pub use pass_node::*;
+pub use pass_node_builder::*;
 pub use render_context::*;
 pub use resource::*;
 pub use resource_board::*;
