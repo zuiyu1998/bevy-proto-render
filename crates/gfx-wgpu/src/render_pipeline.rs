@@ -1,4 +1,4 @@
-use crate::gfx_base::RenderPipelineTrait;
+use frame_graph::prelude::*;
 
 pub struct WgpuRenderPipeline {
     pub render_pipeline: wgpu::RenderPipeline,

@@ -1,4 +1,4 @@
-use crate::gfx_base::BufferTrait;
+use frame_graph::prelude::*;
 
 pub struct WgpuBuffer {
     pub buffer: wgpu::Buffer,

@@ -9,9 +9,9 @@ pub enum ErrorKind {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum RenderBackendError {
+pub enum Error {
     #[error("kind: {0}")]
     Kind(#[from] ErrorKind),
 }
 
-pub type Result<T, E = RenderBackendError> = core::result::Result<T, E>;
+pub type Result<T, E = Error> = core::result::Result<T, E>;

@@ -1,0 +1,8 @@
+[package]
+name = "frame-graph"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+thiserror = { version = "1.0" }
+downcast-rs = "2.0.1"

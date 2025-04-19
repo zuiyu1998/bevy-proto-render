@@ -1,4 +1,4 @@
-use crate::gfx_base::*;
+use frame_graph::prelude::*;
 
 pub struct WgpuRenderDevice {
     pub value: wgpu::Device,

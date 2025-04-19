@@ -1,8 +1,4 @@
-use crate::{
-    Result,
-    frame_graph::{GetView, ResourceTable},
-    gfx_base::{BindGroupRef, BindGroupTrait},
-};
+use frame_graph::prelude::*;
 
 pub struct WgpuBindGroup {
     pub bind_group: wgpu::BindGroup,
@@ -15,11 +11,10 @@ pub struct WgpuBindGroupView<'a> {
     pub entries: &'a [wgpu::BindGroupEntry<'a>],
 }
 
-impl<'a> GetView<'a> for ResourceTable {
+impl ResourceView for WgpuBindGroupView<'_> {
     type ViewRef = BindGroupRef;
-    type View = WgpuBindGroupView<'a>;
 
-    fn get_view(&self, _view_ref: &Self::ViewRef) -> Result<WgpuBindGroupView<'a>> {
+    fn prepare_view(_resource_table: &ResourceTable, _view_ref: &Self::ViewRef) -> Result<Self> {
         todo!()
     }
 }
