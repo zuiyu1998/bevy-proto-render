@@ -1,4 +1,4 @@
-use frame_graph::prelude::RenderDevice as Device;
+use frame_graph::prelude::Device;
 use gfx_wgpu::prelude::WgpuRenderDevice;
 
 use tracing::{info, warn};

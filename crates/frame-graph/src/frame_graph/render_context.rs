@@ -3,15 +3,15 @@ use std::{ops::Range, sync::Arc};
 use crate::{
     ErrorKind, Result,
     gfx_base::{
-        BindGroupRef, CachedRenderPipelineId, CommandBuffer, IndexFormat, PipelineCache,
-        RenderDevice, RenderPassInfo, buffer::Buffer,
+        BindGroupRef, CachedRenderPipelineId, CommandBuffer, Device, IndexFormat, PipelineCache,
+        RenderPassInfo, buffer::Buffer,
     },
 };
 
 use super::{GpuRead, ResourceRef, ResourceTable};
 
 pub struct RenderContext<'a> {
-    device: &'a Arc<RenderDevice>,
+    device: &'a Arc<Device>,
     command_buffer: Option<CommandBuffer>,
     command_buffer_queue: Vec<CommandBuffer>,
     resource_table: ResourceTable,
@@ -19,7 +19,7 @@ pub struct RenderContext<'a> {
 }
 
 impl<'a> RenderContext<'a> {
-    pub fn new(device: &'a Arc<RenderDevice>, pipeline_cache: &'a PipelineCache) -> Self {
+    pub fn new(device: &'a Arc<Device>, pipeline_cache: &'a PipelineCache) -> Self {
         Self {
             device,
             command_buffer: None,
@@ -128,7 +128,7 @@ mod test {
 
     #[test]
     fn test_render_context() {
-        let device = Arc::new(RenderDevice::new(TestRenderDevice));
+        let device = Arc::new(Device::new(TestRenderDevice));
 
         let pipeline_cache = PipelineCache::new(TestPipelineCache);
 

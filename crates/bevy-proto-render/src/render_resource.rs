@@ -1,6 +1,6 @@
 use bevy_derive::Deref;
 use bevy_ecs::prelude::*;
-use frame_graph::prelude::RenderDevice as Device;
+use frame_graph::prelude::Device;
 
 #[derive(Resource, Clone, Deref)]
 pub struct RenderDevice(Device);

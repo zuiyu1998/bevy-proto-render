@@ -5,7 +5,7 @@ pub struct WgpuRenderDevice {
     pub value: wgpu::Device,
 }
 
-impl RenderDeviceTrait for WgpuRenderDevice {
+impl DeviceTrait for WgpuRenderDevice {
     fn create_command_buffer(&self) -> CommandBuffer {
         todo!()
     }
