@@ -2,7 +2,7 @@ use std::ops::Range;
 
 use crate::{ErrorKind, Result, frame_graph::*, gfx_base::*};
 
-use super::{WgpuBindGroupInfo, WgpuBuffer, WgpuRenderPipeline};
+use super::{WgpuBuffer, WgpuRenderPipeline};
 
 pub struct WgpuCommandBuffer {
     device: wgpu::Device,
@@ -95,7 +95,7 @@ impl CommandBufferTrait for WgpuCommandBuffer {
 
         let bind_group_ref = bind_group_ref.unwrap();
 
-        let bind_group_info = WgpuBindGroupInfo::extract(bind_group_ref, resource_table)?;
+        let bind_group_info = resource_table.get_view(bind_group_ref)?;
 
         let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: None,

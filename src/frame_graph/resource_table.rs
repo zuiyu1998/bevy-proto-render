@@ -14,14 +14,9 @@ impl ResourceTable {
     }
 }
 
-pub trait GetResourceTable {
-    type Source;
+pub trait GetView<'a>: Sized {
+    type ViewRef;
+    type View: 'a;
 
-    fn get(&self, resource_table: &ResourceTable) -> Result<Self::Source>;
-}
-
-pub trait ExtractResourceTable: Sized {
-    type Source: 'static;
-
-    fn extract(source: &Self::Source, resource_table: &ResourceTable) -> Result<Self>;
+    fn get_view(&self, view_ref: &Self::ViewRef) -> Result<Self::View>;
 }
