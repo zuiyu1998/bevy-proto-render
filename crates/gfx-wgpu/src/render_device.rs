@@ -1,5 +1,6 @@
 use frame_graph::prelude::*;
 
+#[derive(Clone)]
 pub struct WgpuRenderDevice {
     pub value: wgpu::Device,
 }

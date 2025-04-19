@@ -2,6 +2,7 @@ use crate::gfx_base::{CommandBuffer, RenderDeviceTrait};
 
 use super::TestCommandBuffer;
 
+#[derive(Clone)]
 pub struct TestRenderDevice;
 
 impl RenderDeviceTrait for TestRenderDevice {

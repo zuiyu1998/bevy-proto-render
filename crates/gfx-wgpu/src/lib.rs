@@ -4,11 +4,10 @@ pub mod command_buffer;
 pub mod render_device;
 pub mod render_pipeline;
 
-pub use wgpu;
-
 pub mod prelude {
     pub use crate::bind_group::*;
     pub use crate::buffer::*;
-
-    pub use wgpu;
+    pub use crate::command_buffer::*;
+    pub use crate::render_device::*;
+    pub use crate::render_pipeline::*;
 }

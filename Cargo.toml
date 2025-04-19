@@ -1,3 +1,8 @@
+[package]
+name = "proto-renderer"
+version = "0.1.0"
+edition = "2024"
+
 [workspace]
 members = [
     "./crates/frame-graph",
@@ -5,3 +10,12 @@ members = [
     "crates/gfx-wgpu",
 ]
 resolver = "3"
+
+[dev-dependencies]
+bevy = { version = "=0.16.0-rc.5", default-features = false, features = ["bevy_log", "bevy_window", "bevy_asset", "bevy_scene", "bevy_winit"] }
+bevy-proto-render = { path = "./crates/bevy-proto-render" }
+
+
+[[example]]
+name = "simple"
+path = "examples/simple.rs"

@@ -5,5 +5,4 @@ edition = "2024"
 
 [dependencies]
 frame-graph = { path = "../frame-graph"}
-
-wgpu = { version = "25"}
+wgpu = { version = "24"}
