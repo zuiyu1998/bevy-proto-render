@@ -190,6 +190,8 @@ pub enum RenderSet {
     PrepareResourcesFlush,
     /// A sub-set within [`Prepare`](RenderSet::Prepare) for constructing bind groups, or other data that relies on render resources prepared in [`PrepareResources`](RenderSet::PrepareResources).
     PrepareBindGroups,
+    ///Setup FrameGraph
+    FrameGraphSetup,
     /// Actual rendering happens here.
     /// In most cases, only the render backend should insert resources here.
     Render,
@@ -222,6 +224,7 @@ impl Render {
                 Queue,
                 PhaseSort,
                 Prepare,
+                FrameGraphSetup,
                 Render,
                 Cleanup,
                 PostCleanup,
